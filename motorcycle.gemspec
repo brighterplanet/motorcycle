@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{motorcycle}
-  s.version = "0.0.0"
+  s.version = "0.0.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andy Rossmeissl", "Seamus Abshere", "Ian Hough", "Matt Kling"]
@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
      "Rakefile",
      "VERSION",
      "lib/motorcycle.rb",
+     "motorcycle.gemspec",
      "test/helper.rb",
      "test/test_motorcycle.rb"
   ]
