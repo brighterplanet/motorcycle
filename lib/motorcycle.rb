@@ -29,7 +29,7 @@ module BrighterPlanet
         
         committee :fuel_efficiency do # km per litre
           quorum 'default' do
-            fallback.fuel_efficiency
+            ::Motorcycle.fallback.fuel_efficiency
           end
         end
         
@@ -49,7 +49,7 @@ module BrighterPlanet
           end
           
           quorum 'default' do
-            fallback.annual_distance_estimate
+            ::Motorcycle.fallback.annual_distance_estimate
           end
         end
     
