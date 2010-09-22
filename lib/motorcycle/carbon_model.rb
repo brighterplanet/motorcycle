@@ -1,10 +1,7 @@
-require 'leap'
-
 module BrighterPlanet
   module Motorcycle
     module CarbonModel
       def self.included(base)
-        base.extend ::Leap::Subject
         base.decide :emission, :with => :characteristics do
           committee :emission do # kg CO2
             quorum 'from fuel', :needs => [:fuel_consumed, :emission_factor] do |characteristics|
@@ -32,7 +29,7 @@ module BrighterPlanet
           
           committee :fuel_efficiency do # km per litre
             quorum 'default' do
-              Motorcycle.motorcycle_model.fallback.fuel_efficiency
+              base.fallback.fuel_efficiency
             end
           end
           
@@ -52,7 +49,7 @@ module BrighterPlanet
             end
             
             quorum 'default' do
-              Motorcycle.motorcycle_model.fallback.annual_distance_estimate
+              base.fallback.annual_distance_estimate
             end
           end
       
