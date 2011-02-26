@@ -20,8 +20,8 @@ module BrighterPlanet
           end
           
           committee :emission_factor do # kg CO2 per litre
-            quorum 'from fuel type', :needs => :fuel_type do |characteristics|
-              characteristics[:fuel_type].emission_factor
+            quorum 'from fuel', :needs => :fuel do |characteristics|
+              characteristics[:fuel].emission_factor
             end
           end
           
@@ -37,9 +37,9 @@ module BrighterPlanet
             end
           end
           
-          committee :fuel_type do
+          committee :fuel do
             quorum 'default' do
-              AutomobileFuelType.find_by_code 'R'
+              AutomobileFuel.find_by_code 'R'
             end
           end
           
@@ -47,7 +47,7 @@ module BrighterPlanet
             quorum 'from annual distance estimate', :needs => :annual_distance_estimate do |characteristics|
               characteristics[:annual_distance_estimate]
             end
-      
+            
             quorum 'from weekly distance estimate', :needs => :weekly_distance_estimate do |characteristics, timeframe|
               (characteristics[:weekly_distance_estimate] / 7 ) * timeframe.year.days
             end
@@ -56,7 +56,7 @@ module BrighterPlanet
               base.fallback.annual_distance_estimate
             end
           end
-      
+          
           committee :active_subtimeframe do
             quorum 'from acquisition and retirement', :needs => [:acquisition, :retirement] do |characteristics, timeframe|
               Timeframe.constrained_new characteristics[:acquisition].to_date, characteristics[:retirement].to_date, timeframe
