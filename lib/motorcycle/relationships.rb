@@ -1,9 +1,7 @@
 module BrighterPlanet
   module Motorcycle
     module Relationships
-      def self.included(target)
-      end
+      # placeholder
     end
   end
 end
-     
