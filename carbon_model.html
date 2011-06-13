@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>carbon_model.rb</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-1667526-20']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+</head>
+
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>carbon_model.rb</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-1">&#182;</a>
+        </div>
+        <p>Copyright © 2010 Brighter Planet.
+See LICENSE for details.
+Contact Brighter Planet for dual-license arrangements.</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">module</span> <span class="nn">BrighterPlanet</span>
+  <span class="k">module</span> <span class="nn">Motorcycle</span>
+    <span class="k">module</span> <span class="nn">CarbonModel</span>
+      <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">included</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+        <span class="n">base</span><span class="o">.</span><span class="n">decide</span> <span class="ss">:emission</span><span class="p">,</span> <span class="ss">:with</span> <span class="o">=&gt;</span> <span class="ss">:characteristics</span> <span class="k">do</span>
+          <span class="n">committee</span> <span class="ss">:emission</span> <span class="k">do</span> <span class="c1"># kg CO2</span>
+            <span class="n">quorum</span> <span class="s1">&#39;from fuel&#39;</span><span class="p">,</span> <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:fuel_consumed</span><span class="p">,</span> <span class="ss">:emission_factor</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="o">|</span>
+              <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_consumed</span><span class="o">]</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:emission_factor</span><span class="o">]</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+          
+          <span class="n">committee</span> <span class="ss">:fuel_consumed</span> <span class="k">do</span> <span class="c1"># litres fuel</span>
+            <span class="n">quorum</span> <span class="s1">&#39;from distance and fuel efficiency&#39;</span><span class="p">,</span> <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:distance</span><span class="p">,</span> <span class="ss">:fuel_efficiency</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="o">|</span>
+              <span class="n">characteristics</span><span class="o">[</span><span class="ss">:distance</span><span class="o">]</span> <span class="o">/</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel_efficiency</span><span class="o">]</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+          
+          <span class="n">committee</span> <span class="ss">:emission_factor</span> <span class="k">do</span> <span class="c1"># kg CO2 per litre</span>
+            <span class="n">quorum</span> <span class="s1">&#39;from fuel&#39;</span><span class="p">,</span> <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="ss">:fuel</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="o">|</span>
+              <span class="n">characteristics</span><span class="o">[</span><span class="ss">:fuel</span><span class="o">].</span><span class="n">emission_factor</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+          
+          <span class="n">committee</span> <span class="ss">:distance</span> <span class="k">do</span> <span class="c1"># km</span>
+            <span class="n">quorum</span> <span class="s1">&#39;from annual distance&#39;</span><span class="p">,</span> <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:annual_distance</span><span class="p">,</span> <span class="ss">:active_subtimeframe</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="p">,</span> <span class="n">timeframe</span><span class="o">|</span>
+              <span class="n">characteristics</span><span class="o">[</span><span class="ss">:annual_distance</span><span class="o">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">characteristics</span><span class="o">[</span><span class="ss">:active_subtimeframe</span><span class="o">]</span> <span class="o">/</span> <span class="n">timeframe</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+          
+          <span class="n">committee</span> <span class="ss">:fuel_efficiency</span> <span class="k">do</span> <span class="c1"># km per litre</span>
+            <span class="n">quorum</span> <span class="s1">&#39;default&#39;</span> <span class="k">do</span>
+              <span class="n">base</span><span class="o">.</span><span class="n">fallback</span><span class="o">.</span><span class="n">fuel_efficiency</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+          
+          <span class="n">committee</span> <span class="ss">:fuel</span> <span class="k">do</span>
+            <span class="n">quorum</span> <span class="s1">&#39;default&#39;</span> <span class="k">do</span>
+              <span class="no">AutomobileFuel</span><span class="o">.</span><span class="n">find_by_code</span> <span class="s1">&#39;R&#39;</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+          
+          <span class="n">committee</span> <span class="ss">:annual_distance</span> <span class="k">do</span> <span class="c1"># kilometres</span>
+            <span class="n">quorum</span> <span class="s1">&#39;from annual distance estimate&#39;</span><span class="p">,</span> <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="ss">:annual_distance_estimate</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="o">|</span>
+              <span class="n">characteristics</span><span class="o">[</span><span class="ss">:annual_distance_estimate</span><span class="o">]</span>
+            <span class="k">end</span>
+            
+            <span class="n">quorum</span> <span class="s1">&#39;from weekly distance estimate&#39;</span><span class="p">,</span> <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="ss">:weekly_distance_estimate</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="p">,</span> <span class="n">timeframe</span><span class="o">|</span>
+              <span class="p">(</span><span class="n">characteristics</span><span class="o">[</span><span class="ss">:weekly_distance_estimate</span><span class="o">]</span> <span class="o">/</span> <span class="mi">7</span> <span class="p">)</span> <span class="o">*</span> <span class="n">timeframe</span><span class="o">.</span><span class="n">year</span><span class="o">.</span><span class="n">days</span>
+            <span class="k">end</span>
+            
+            <span class="n">quorum</span> <span class="s1">&#39;default&#39;</span> <span class="k">do</span>
+              <span class="n">base</span><span class="o">.</span><span class="n">fallback</span><span class="o">.</span><span class="n">annual_distance_estimate</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+          
+          <span class="n">committee</span> <span class="ss">:active_subtimeframe</span> <span class="k">do</span>
+            <span class="n">quorum</span> <span class="s1">&#39;from acquisition and retirement&#39;</span><span class="p">,</span> <span class="ss">:needs</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:acquisition</span><span class="p">,</span> <span class="ss">:retirement</span><span class="o">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="p">,</span> <span class="n">timeframe</span><span class="o">|</span>
+              <span class="no">Timeframe</span><span class="o">.</span><span class="n">constrained_new</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:acquisition</span><span class="o">].</span><span class="n">to_date</span><span class="p">,</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:retirement</span><span class="o">].</span><span class="n">to_date</span><span class="p">,</span> <span class="n">timeframe</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+          
+          <span class="n">committee</span> <span class="ss">:acquisition</span> <span class="k">do</span>
+            <span class="n">quorum</span> <span class="s1">&#39;from retirement&#39;</span><span class="p">,</span> <span class="ss">:appreciates</span> <span class="o">=&gt;</span> <span class="ss">:retirement</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="p">,</span> <span class="n">timeframe</span><span class="o">|</span>
+              <span class="o">[</span> <span class="n">timeframe</span><span class="o">.</span><span class="n">from</span><span class="p">,</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:retirement</span><span class="o">]</span> <span class="o">].</span><span class="n">compact</span><span class="o">.</span><span class="n">min</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+          
+          <span class="n">committee</span> <span class="ss">:retirement</span> <span class="k">do</span>
+            <span class="n">quorum</span> <span class="s1">&#39;from acquisition&#39;</span><span class="p">,</span> <span class="ss">:appreciates</span> <span class="o">=&gt;</span> <span class="ss">:acquisition</span> <span class="k">do</span> <span class="o">|</span><span class="n">characteristics</span><span class="p">,</span> <span class="n">timeframe</span><span class="o">|</span>
+              <span class="o">[</span> <span class="n">timeframe</span><span class="o">.</span><span class="n">to</span><span class="p">,</span> <span class="n">characteristics</span><span class="o">[</span><span class="ss">:acquisition</span><span class="o">]</span> <span class="o">].</span><span class="n">compact</span><span class="o">.</span><span class="n">max</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>
