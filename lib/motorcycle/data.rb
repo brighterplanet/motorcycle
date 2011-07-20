@@ -2,7 +2,7 @@ module BrighterPlanet
   module Motorcycle
     module Data
       def self.included(base)
-        base.create_table do
+        base.force_schema do
           string   'name'
           date     'date' # ?
           float    'fuel_efficiency'
