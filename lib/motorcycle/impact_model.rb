@@ -19,7 +19,7 @@ module BrighterPlanet
             end
           end
           
-          committee :carbon_factor do # kg CO2 per litre
+          committee :emission_factor do # kg CO2 per litre
             quorum 'from fuel', :needs => :fuel do |characteristics|
               characteristics[:fuel].emission_factor
             end
