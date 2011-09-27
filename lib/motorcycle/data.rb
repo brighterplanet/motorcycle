@@ -2,15 +2,13 @@ module BrighterPlanet
   module Motorcycle
     module Data
       def self.included(base)
-        base.force_schema do
-          string   'name'
-          date     'date' # ?
-          float    'fuel_efficiency'
-          float    'annual_distance_estimate'
-          float    'weekly_distance_estimate'
-          date     'acquisition'
-          date     'retirement'
-        end
+        base.col :name
+        base.col :date, :type => :date # ?
+        base.col :fuel_efficiency, :type => :float
+        base.col :annual_distance_estimate, :type => :float
+        base.col :weekly_distance_estimate, :type => :float
+        base.col :acquisition, :type => :date
+        base.col :retirement, :type => :date
       end
     end
   end

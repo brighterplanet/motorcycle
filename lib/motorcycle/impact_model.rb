@@ -4,10 +4,10 @@
 
 module BrighterPlanet
   module Motorcycle
-    module CarbonModel
+    module ImpactModel
       def self.included(base)
-        base.decide :emission, :with => :characteristics do
-          committee :emission do # kg CO2
+        base.decide :impact, :with => :characteristics do
+          committee :carbon do # kg CO2
             quorum 'from fuel', :needs => [:fuel_consumed, :emission_factor] do |characteristics|
               characteristics[:fuel_consumed] * characteristics[:emission_factor]
             end
@@ -19,7 +19,7 @@ module BrighterPlanet
             end
           end
           
-          committee :emission_factor do # kg CO2 per litre
+          committee :carbon_factor do # kg CO2 per litre
             quorum 'from fuel', :needs => :fuel do |characteristics|
               characteristics[:fuel].emission_factor
             end
