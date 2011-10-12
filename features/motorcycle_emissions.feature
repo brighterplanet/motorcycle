@@ -1,6 +1,9 @@
 Feature: Motorcycle Emissions Calculations
   The motorcycle model should generate correct emission calculations
 
+  Background:
+    Given a motorcycle
+
   Scenario Outline: Standard Calculations for motorcycle
     Given it has "annual_distance_estimate" of "<distance>"
     When impacts are calculated

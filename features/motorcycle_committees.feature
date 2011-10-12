@@ -1,6 +1,9 @@
 Feature: Motorcycle Committee Calculations
   The motorcycle model should generate correct committee calculations
 
+  Background:
+    Given a motorcycle
+
   Scenario Outline: Fuel consumed committee
     Given a characteristic "distance" of "<distance>"
     And a characteristic "fuel_efficiency" of "<fuel_efficiency>"
