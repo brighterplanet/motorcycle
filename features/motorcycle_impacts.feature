@@ -7,7 +7,7 @@ Feature: Motorcycle Emissions Calculations
   Scenario Outline: Standard Calculations for motorcycle
     Given it has "annual_distance_estimate" of "<distance>"
     When impacts are calculated
-    Then the amount of "carbon" should be within "0.1" kgs of "<emission>"
+    Then the amount of "carbon" should be within "0.1" of "<emission>"
     Examples:
       | distance | emission |
       |     1019 |     97.2 |
