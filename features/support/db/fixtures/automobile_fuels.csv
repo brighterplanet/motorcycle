@@ -1,2 +1,2 @@
-code,name,emission_factor
-R,regular gasoline,2.48
+name,code,energy_content,energy_content_units,co2_emission_factor,co2_biogenic_emission_factor,ch4_emission_factor,n2o_emission_factor
+regular gasoline,R,35,megajoules_per_litre,2.3,0,0.0004,0.006

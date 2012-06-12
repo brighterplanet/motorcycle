@@ -8,25 +8,35 @@ module BrighterPlanet
       def self.included(base)
         base.decide :impact, :with => :characteristics do
           committee :carbon do # kg CO2
-            quorum 'from fuel', :needs => [:fuel_consumed, :emission_factor] do |characteristics|
-              characteristics[:fuel_consumed] * characteristics[:emission_factor]
+            quorum 'from fuel use and co2 emission factor', :needs => [:fuel_use, :co2_emission_factor] do |characteristics|
+              characteristics[:fuel_use] * characteristics[:co2_emission_factor]
             end
           end
           
-          committee :fuel_consumed do # litres fuel
-            quorum 'from distance and fuel efficiency', :needs => [:distance, :fuel_efficiency] do |characteristics|
-              characteristics[:distance] / characteristics[:fuel_efficiency]
-            end
-          end
-          
-          committee :emission_factor do # kg CO2 per litre
+          committee :co2_emission_factor do # kg CO2 per various
             quorum 'from fuel', :needs => :fuel do |characteristics|
-              characteristics[:fuel].emission_factor
+              characteristics[:fuel].co2_emission_factor
+            end
+          end
+          
+          committee :energy do # MJ
+            quorum 'from fuel use and fuel', :needs => [:fuel_use, :fuel] do |characteristics|
+              characteristics[:fuel_use] * characteristics[:fuel].energy_content
+            end
+          end
+          
+          committee :fuel_use do # various
+            quorum 'from distance, fuel efficiency, and fuel', :needs => [:distance, :fuel_efficiency, :fuel] do |characteristics|
+              if characteristics[:fuel].non_liquid?
+                characteristics[:distance] / characteristics[:fuel_efficiency] * AutomobileFuel.find('gasoline').energy_content / characteristics[:fuel].energy_content
+              else
+                characteristics[:distance] / characteristics[:fuel_efficiency]
+              end
             end
           end
           
           committee :distance do # km
-            quorum 'from annual distance', :needs => [:annual_distance, :active_subtimeframe] do |characteristics, timeframe|
+            quorum 'from annual distance, active subtimeframe, and timeframe', :needs => [:annual_distance, :active_subtimeframe] do |characteristics, timeframe|
               characteristics[:annual_distance] * (characteristics[:active_subtimeframe] / timeframe.year)
             end
           end
@@ -59,18 +69,22 @@ module BrighterPlanet
           
           committee :active_subtimeframe do
             quorum 'from acquisition and retirement', :needs => [:acquisition, :retirement] do |characteristics, timeframe|
-              Timeframe.constrained_new characteristics[:acquisition].to_date, characteristics[:retirement].to_date, timeframe
+              if characteristics[:acquisition].value <= characteristics[:retirement].value
+                Timeframe.constrained_new characteristics[:acquisition].to_date, characteristics[:retirement].to_date, timeframe
+              else
+                Timeframe.constrained_new characteristics[:retirement].to_date, characteristics[:retirement].to_date, timeframe
+              end
             end
           end
           
           committee :acquisition do
-            quorum 'from retirement', :appreciates => :retirement do |characteristics, timeframe|
+            quorum 'from timeframe', :appreciates => :retirement do |characteristics, timeframe|
               [ timeframe.from, characteristics[:retirement] ].compact.min
             end
           end
           
           committee :retirement do
-            quorum 'from acquisition', :appreciates => :acquisition do |characteristics, timeframe|
+            quorum 'from timeframe', :appreciates => :acquisition do |characteristics, timeframe|
               [ timeframe.to, characteristics[:acquisition] ].compact.max
             end
           end
