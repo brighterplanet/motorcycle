@@ -2,6 +2,8 @@
 # See LICENSE for details.
 # Contact Brighter Planet for dual-license arrangements.
 
+require 'earth/automobile/automobile_fuel'
+
 module BrighterPlanet
   module Motorcycle
     module ImpactModel
